@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOPI 8-BIT — Kopi Enak, Diantar Sebelum Game-mu Selesai</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+</head>
+<body class="crt-active">
+
+  <!-- ============================================================
+       1. START SCREEN (PRESS START TO BREW)
+       ============================================================ -->
+  <div id="start-screen">
+    <div class="start-cabinet pixel-box-gold">
+      <h1 class="start-logo-title">★ KOPI 8-BIT ★</h1>
+      <p class="start-subtitle">CYBER COFFEE LAB & ARCADE CAFE</p>
+      
+      <div class="start-mascot-container">
+        <!-- SVG 8-bit Mascot Pixel Coffee Cup -->
+        <svg class="pixel-mascot" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Steam -->
+          <rect x="22" y="4" width="4" height="4" fill="#ffffff" />
+          <rect x="26" y="8" width="4" height="4" fill="#ffffff" />
+          <rect x="34" y="2" width="4" height="4" fill="#ffffff" />
+          <rect x="38" y="6" width="4" height="4" fill="#ffffff" />
+          <!-- Cup Rim & Body -->
+          <rect x="12" y="16" width="36" height="4" fill="#000000" />
+          <rect x="12" y="20" width="36" height="32" fill="#E2B887" />
+          <rect x="16" y="20" width="28" height="8" fill="#47260e" />
+          <!-- Eyes & Smile -->
+          <rect x="20" y="32" width="4" height="4" fill="#000000" />
+          <rect x="36" y="32" width="4" height="4" fill="#000000" />
+          <rect x="24" y="40" width="12" height="4" fill="#000000" />
+          <!-- Handle -->
+          <rect x="48" y="24" width="8" height="20" fill="#D4A373" />
+          <rect x="48" y="24" width="8" height="4" fill="#000000" />
+          <rect x="48" y="40" width="8" height="4" fill="#000000" />
+          <rect x="52" y="28" width="4" height="12" fill="#190f2b" />
+          <!-- Shadow/Base -->
+          <rect x="16" y="52" width="28" height="4" fill="#B8860B" />
+          <rect x="12" y="56" width="36" height="4" fill="#000000" />
+        </svg>
+      </div>
+
+      <div class="start-action-container">
+        <p class="blink-text">★ INSERT COIN TO PLAY ★</p>
+        <button id="start-app-btn" class="pixel-btn start-btn">
+          ▶ PRESS START TO BREW
+        </button>
+      </div>
+
+      <p class="start-footer-notes">
+        Tekan tombol atau tekan tombol [ENTER] di keyboard.<br>
+        Musik chiptune & efek suara 8-bit sintetis otomatis aktif!
+      </p>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       2. TOP RETRO HUD & AUDIO MARQUEE
+       ============================================================ -->
+  <header class="retro-hud">
+    <div class="hud-container">
+      <a href="#" class="hud-logo">
+        <span class="hud-cup-icon">☕</span>
+        <span>KOPI 8-BIT</span>
+      </a>
+
+      <nav class="hud-nav">
+        <a href="#menu">[Lihat Menu]</a>
+        <a href="#cara-kerja">[Cara Kerja]</a>
+        <a href="javascript:void(0)" onclick="openPromoListModal()" style="color: var(--pixel-gold); border-color: var(--pixel-gold);">[🎟️ Kupon Diskon]</a>
+        <a href="#arcade-section">[Arcade Game]</a>
+        <a href="#status-radar">[Radar Antar]</a>
+        <a href="#ulasan">[High Scores]</a>
+      </nav>
+
+      <div class="hud-controls">
+        <button id="btn-edit-cashier" class="hud-cashier-badge" onclick="openCashierModal()" title="Klik untuk Ubah Nama Kasir">
+          🧑‍🍳 KASIR: <span id="hud-cashier-name">Barista Bot</span> ✏️
+        </button>
+        <button id="btn-toggle-bgm" class="icon-control-btn active" title="Musik Chiptune On/Off">
+          🎵 MUSIK: ON
+        </button>
+        <button id="btn-next-track" class="icon-control-btn" title="Ganti Lagu">
+          ⏭ GANTI
+        </button>
+        <button id="btn-toggle-sfx" class="icon-control-btn active" title="Sound Effects">
+          🔊 SFX: ON
+        </button>
+        <button id="btn-toggle-crt" class="icon-control-btn active" title="CRT Scanlines Filter">
+          📺 CRT
+        </button>
+        <button class="pixel-btn pixel-btn-red" onclick="showStartScreen()" style="padding: 6px 10px; font-size: 9px;">
+          RESTART
+        </button>
+      </div>
+    </div>
+
+    <!-- Music Status Bar -->
+    <div class="music-bar">
+      <div class="music-title-wrap">
+        <span class="music-note">♪♫</span>
+        <span>BGM: <strong id="music-current-title" style="color: var(--pixel-gold);">Cozy 8-Bit Cafe</strong> (Web Audio Chiptune)</span>
+      </div>
+      <div id="store-hours-badge" style="color: var(--pixel-green); font-size: 8px;">
+        BUKA: 08.00 - 22.00 WIB
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       3. HERO SECTION + INTERACTIVE CUP ("Lihat Cangkirnya Berubah")
+       ============================================================ -->
+  <main>
+    <section class="hero-section">
+      <div class="hero-grid">
+        <!-- Hero Text -->
+        <div class="hero-content pixel-box">
+          <div class="hero-status-tag">
+            <span class="status-dot" id="store-status-dot"></span>
+            <span id="store-status-text">KEDAI SEDANG BUKA (08:00 - 22:00)</span>
+          </div>
+
+          <h1 class="hero-title">
+            Kopi enak, diantar <span class="highlight">sebelum game-mu selesai.</span>
+          </h1>
+
+          <p class="hero-desc">
+            Pesan lewat HP, kopi sampai dalam 20 menit. Pilih menu di bawah dan lihat cangkirnya berubah.
+          </p>
+
+          <div class="hero-stats-row">
+            <div class="hero-stat-card">
+              <div class="stat-val">20 MIN</div>
+              <div class="stat-lbl">WAKTU ANTAR</div>
+            </div>
+            <div class="hero-stat-card">
+              <div class="stat-val">100%</div>
+              <div class="stat-lbl">BIJI ARABIKA</div>
+            </div>
+            <div class="hero-stat-card">
+              <div class="stat-val">8-BIT</div>
+              <div class="stat-lbl">AUTHENTIC VIBE</div>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#menu" class="pixel-btn">
+              🛒 PESAN SEKARANG
+            </a>
+            <button class="pixel-btn pixel-btn-cyan" onclick="openMiniGame()">
+              👾 MAIN MINI-GAME
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Interactive Cup Visualizer -->
+        <div class="interactive-cup-preview pixel-box-gold" id="interactive-cup-box">
+          <div class="cup-header-title">★ CANGKIR INTERAKTIF ★</div>
+          <p class="cup-sub-note">Klik menu mana pun & lihat reaksi cangkirnya!</p>
+
+          <div class="cup-stage">
+            <div class="pixel-cup-wrapper">
+              <!-- Pixel Steam -->
+              <div class="cup-steam-particles" id="cup-steam">
+                <span class="steam-puff steam-1"></span>
+                <span class="steam-puff steam-2"></span>
+                <span class="steam-puff steam-3"></span>
+              </div>
+
+              <!-- Cup Handle -->
+              <div class="cup-handle">
+                <div class="cup-handle-inner"></div>
+              </div>
+
+              <!-- Cup Mug Outer Body -->
+              <div class="cup-mug-outer">
+                <div class="cup-inner-liquid" id="cup-liquid">
+                  <div class="cup-foam-layer" id="cup-foam"></div>
+                </div>
+
+                <!-- Floating Ice Cubes -->
+                <div class="cup-ice-cubes visible" id="cup-ice-cubes">
+                  <div class="pixel-ice ice-1"></div>
+                  <div class="pixel-ice ice-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cup-badge-name" id="cup-preview-title">☕ Kopi Susu 8-Bit</div>
+
+          <!-- Temperature Customizer Toggles -->
+          <div style="display: flex; justify-content: center; gap: 8px; margin: 12px 0;">
+            <button id="btn-temp-ice" class="pixel-btn pixel-btn-cyan" style="padding: 6px 10px; font-size: 8px;" onclick="setPreviewTemp('ice')">
+              🧊 DINGIN (ES)
+            </button>
+            <button id="btn-temp-hot" class="pixel-btn" style="padding: 6px 10px; font-size: 8px;" onclick="setPreviewTemp('hot')">
+              ♨️ PANAS
+            </button>
+          </div>
+
+          <!-- RPG Stat Meters -->
+          <div class="rpg-stats-container">
+            <div class="rpg-stat-line">
+              <span>⚡ CAFFEINE BOOST</span>
+              <div class="rpg-bar-track">
+                <div class="rpg-bar-fill fill-caffeine" id="stat-fill-caffeine"></div>
+              </div>
+              <span id="stat-val-caffeine">75%</span>
+            </div>
+
+            <div class="rpg-stat-line">
+              <span>🔋 ENERGY LEVEL</span>
+              <div class="rpg-bar-track">
+                <div class="rpg-bar-fill fill-energy" id="stat-fill-energy"></div>
+              </div>
+              <span id="stat-val-energy">85%</span>
+            </div>
+
+            <div class="rpg-stat-line">
+              <span>🍬 SWEETNESS</span>
+              <div class="rpg-bar-track">
+                <div class="rpg-bar-fill fill-sweet" id="stat-fill-sweet"></div>
+              </div>
+              <span id="stat-val-sweet">70%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. MENU SECTION ("Pilih menu")
+         ============================================================ -->
+    <section class="section-wrapper" id="menu">
+      <div class="section-header">
+        <h2 class="section-title">## Pilih Menu</h2>
+        <p class="section-subtitle">Diseduh segar dari biji kopi pilihan barista pixel</p>
+      </div>
+
+      <!-- Fitur Tambah Menu & Ubah Harga -->
+      <div class="admin-action-row">
+        <button class="pixel-btn pixel-btn-green" onclick="openAddMenuModal()">
+          ➕ TAMBAH MENU
+        </button>
+        <button class="pixel-btn" onclick="openCreateCouponModal()" style="background: var(--pixel-gold); color: #000;">
+          🎟️ BUAT KUPON KUSTOM
+        </button>
+        <button class="pixel-btn pixel-btn-cyan" onclick="toggleEditMode()" id="btn-toggle-edit-mode">
+          ✏️ MODE UBAH HARGA
+        </button>
+        <button class="pixel-btn pixel-btn-red" style="padding: 10px 14px; font-size: 9px;" onclick="resetMenuToDefault()">
+          🔄 RESET MENU
+        </button>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="menu-filter-bar">
+        <button class="filter-btn active" onclick="filterMenu('all', this)">SEMUA (ALL)</button>
+        <button class="filter-btn" onclick="filterMenu('coffee', this)">KOPI RETRO</button>
+        <button class="filter-btn" onclick="filterMenu('non-coffee', this)">NON-KOPI</button>
+        <button class="filter-btn" onclick="filterMenu('snack', this)">PIXEL SNACKS</button>
+      </div>
+
+      <!-- Menu Grid -->
+      <div class="menu-grid" id="menu-grid">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. HOW IT WORKS SECTION ("Cara kerjanya")
+         ============================================================ -->
+    <section class="section-wrapper" id="cara-kerja">
+      <div class="section-header">
+        <h2 class="section-title">## Cara Kerjanya</h2>
+        <p class="section-subtitle">Tiga langkah kilat menikmati kopi 8-bit tanpa ribet</p>
+      </div>
+
+      <div class="steps-grid">
+        <!-- Step 1 -->
+        <div class="step-card pixel-box">
+          <div class="step-badge-number">1</div>
+          <div class="step-icon">📋</div>
+          <h3 class="step-title">1. Pilih</h3>
+          <p class="step-text">
+            Pilih menu dan jumlah, sesuaikan tingkat es & gula, lalu masukkan alamat atau nomor meja tempatmu berada.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card pixel-box">
+          <div class="step-badge-number">2</div>
+          <div class="step-icon">💳</div>
+          <h3 class="step-title">2. Bayar</h3>
+          <p class="step-text">
+            Bayar lewat QRIS instan atau bayar di tempat (COD/Tunai). Dapatkan struk retro langsung dicetak!
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card pixel-box">
+          <div class="step-badge-number">3</div>
+          <div class="step-icon">🛵</div>
+          <h3 class="step-title">3. Terima</h3>
+          <p class="step-text">
+            Kurir kami antar kopimu segera. Biasanya sampai dalam 20 menit sebelum ronde gamemu tuntas.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. ARCADE MINI-GAME BANNER & RADAR
+         ============================================================ -->
+    <section class="section-wrapper" id="arcade-section">
+      <div class="arcade-banner-box pixel-box">
+        <div class="arcade-text-left">
+          <h3>👾 MINI-GAME ARCADE: TANGKAP BIJI KOPI!</h3>
+          <p>Mainkan mini-game 25 detik, tangkap biji kopi emas & dapatkan Voucher Diskon 10% - 20%!</p>
+          <p style="font-size: 8px; color: var(--pixel-gold); margin-top: 6px;">
+            💡 Rahasia: Coba ketik kode Konami di keyboard: [↑ ↑ ↓ ↓ ← → ← → B A]
+          </p>
+        </div>
+        <button class="pixel-btn pixel-btn-green" onclick="openMiniGame()">
+          ▶ MAIN SEKARANG
+        </button>
+      </div>
+    </section>
+
+    <!-- Delivery Radar Tracker -->
+    <section class="section-wrapper" id="status-radar">
+      <div class="tracker-box pixel-box">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 13px; color: var(--pixel-gold);">🛵 RADAR PENGANTARAN KOPI (20 MENIT)</h3>
+          <span class="pixel-badge">LIVE TRACKING</span>
+        </div>
+
+        <div class="tracker-road">
+          <div class="road-stripe"></div>
+          <div class="delivery-bike" id="delivery-courier-bike">🛵💨</div>
+        </div>
+
+        <div class="tracker-milestones">
+          <span class="milestone active">1. Pesanan Diterima</span>
+          <span class="milestone">2. Diseduh Barista</span>
+          <span class="milestone">3. Kurir On The Way</span>
+          <span class="milestone">4. Kopi Sampai! ☕</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         7. LEADERBOARD & CUSTOMER REVIEWS
+         ============================================================ -->
+    <section class="section-wrapper" id="ulasan">
+      <div class="section-header">
+        <h2 class="section-title">## Hall of Fame (Review Pelanggan)</h2>
+        <p class="section-subtitle">Skor tertinggi para penikmat kopi 8-bit sejati</p>
+      </div>
+
+      <div class="leaderboard-grid">
+        <div class="review-card pixel-box">
+          <div class="review-top">
+            <div class="pixel-avatar">🧙‍♂️</div>
+            <div>
+              <div class="reviewer-name">Alex "The Mage"</div>
+              <div class="reviewer-score">SCORE: ★★★★★ (9999 pts)</div>
+            </div>
+          </div>
+          <p class="review-text">
+            "Kopinya beneran sampai pas gue lagi cooldown respawn di rank match! Rasa kopi arennya pas banget, gak bikin kembung."
+          </p>
+        </div>
+
+        <div class="review-card pixel-box">
+          <div class="review-top">
+            <div class="pixel-avatar">🥷</div>
+            <div>
+              <div class="reviewer-name">Rian Shinobi</div>
+              <div class="reviewer-score">SCORE: ★★★★★ (9850 pts)</div>
+            </div>
+          </div>
+          <p class="review-text">
+            "Fitur struk retro-nya keren parah! Desain webnya seru banget ada suara chiptune dan mini-gamenya!"
+          </p>
+        </div>
+
+        <div class="review-card pixel-box">
+          <div class="review-top">
+            <div class="pixel-avatar">🤖</div>
+            <div>
+              <div class="reviewer-name">Pixel Queen</div>
+              <div class="reviewer-score">SCORE: ★★★★★ (9700 pts)</div>
+            </div>
+          </div>
+          <p class="review-text">
+            "Boss Cold Brew-nya mantep bikin melek semalaman ngoding & grinding game. Wajib coba!"
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       FLOATING CART ACTION BUTTON
+       ============================================================ -->
+  <div class="bottom-cart-bar">
+    <button class="pixel-btn floating-cart-btn" onclick="openCartModal()">
+      🛒 KERANJANG <span class="cart-count-pill cart-count-badge">0</span>
+    </button>
+  </div>
+
+  <!-- ============================================================
+       MODAL 1: KERANJANG BELANJA (CART)
+       ============================================================ -->
+  <div id="cart-modal" class="modal-overlay hidden">
+    <div class="modal-container pixel-box-gold">
+      <button class="modal-close-btn" onclick="closeCartModal()">✕</button>
+      <h3 class="modal-header-title">🛒 KERANJANG BELANJA</h3>
+
+      <div id="cart-items-container" class="cart-items-list">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Fitur Diskon & Kupon Promo -->
+      <div style="background: #140b20; border: 2px solid #000; padding: 12px; margin-bottom: 14px;">
+        <label style="display: block; font-size: 8px; color: var(--pixel-cyan); margin-bottom: 6px;">
+          🎟️ PUNYA KODE DISKON / VOUCHER?
+        </label>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="cart-coupon-input" class="pixel-input" placeholder="MISAL: GAMER20 / KOPI8BIT" style="text-transform: uppercase; font-size: 9px; padding: 8px;">
+          <button type="button" class="pixel-btn pixel-btn-cyan" style="padding: 8px 12px; font-size: 8px;" onclick="applyCustomCoupon()">
+            PASANG
+          </button>
+        </div>
+
+        <!-- Diskon Cepat Chips -->
+        <div style="margin-top: 10px;">
+          <div style="font-size: 8px; color: var(--pixel-gray); margin-bottom: 5px;">PILIHAN DISKON CEPAT:</div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button type="button" class="discount-chip-btn" onclick="applyQuickDiscount('DISKON10', 10, 'Diskon 10%')">10%</button>
+            <button type="button" class="discount-chip-btn" onclick="applyQuickDiscount('GAMER20', 20, 'Gamer 20%')">20%</button>
+            <button type="button" class="discount-chip-btn" onclick="applyQuickDiscount('JUMAT30', 30, 'Spesial 30%')">30%</button>
+            <button type="button" class="discount-chip-btn" onclick="applyQuickDiscount('FLASH50', 50, 'Flash 50%')">50%</button>
+            <button type="button" class="discount-chip-btn" onclick="applyNominalDiscount('POTONGAN5K', 5000, 'Potongan Rp5.000')">-5K</button>
+            <button type="button" class="discount-chip-btn" onclick="openCustomDiscountModal()" style="color: var(--pixel-green);">✏️ Custom</button>
+          </div>
+        </div>
+
+        <!-- Badge Diskon Aktif -->
+        <div id="coupon-active-badge" class="discount-info-badge hidden">
+          <span id="coupon-active-text">Diskon Aktif</span>
+          <button type="button" onclick="removeCoupon()" style="background: none; border: none; color: var(--pixel-pink); cursor: pointer; font-family: var(--font-pixel); font-size: 8px;">[HAPUS ✕]</button>
+        </div>
+      </div>
+
+      <div class="cart-summary-box">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span id="cart-subtotal-val">Rp0</span>
+        </div>
+        <div class="summary-row" style="color: var(--pixel-pink);">
+          <span>Voucher Diskon:</span>
+          <span id="cart-discount-val">-Rp0</span>
+        </div>
+        <div class="summary-row total-row">
+          <span>Total:</span>
+          <span id="cart-total-val">Rp0</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="pixel-btn pixel-btn-green" style="flex: 1;" onclick="openCheckoutModal()">
+          LENGKAPI PESANAN ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 2: CHECKOUT FORM
+       ============================================================ -->
+  <div id="checkout-modal" class="modal-overlay hidden">
+    <div class="modal-container pixel-box">
+      <button class="modal-close-btn" onclick="closeCheckoutModal()">✕</button>
+      <h3 class="modal-header-title">📝 FORM PEMESANAN</h3>
+
+      <form onsubmit="processOrder(event)">
+        <div class="pixel-form-group">
+          <label>NAMA PEMESAN / GAMER TAG</label>
+          <input type="text" id="order-name" class="pixel-input" placeholder="Contoh: Budi Player 1" required>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>NAMA KASIR / BARISTA (BEBAS DIUBAH)</label>
+          <input type="text" id="order-cashier" class="pixel-input" placeholder="Contoh: Barista Bot / Kasir 8-Bit">
+        </div>
+
+        <div class="pixel-form-group">
+          <label>NOMOR WHATSAPP / HP</label>
+          <input type="tel" id="order-phone" class="pixel-input" placeholder="Contoh: 081234567890" required>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>TIPE PESANAN</label>
+          <select id="order-type" class="pixel-select">
+            <option value="Antar ke Alamat (Delivery 20 Menit)">Antar ke Alamat (Delivery 20 Menit)</option>
+            <option value="Dine In (Makan di Tempat)">Dine In (Makan di Tempat)</option>
+            <option value="Take Away (Ambil Sendiri)">Take Away (Ambil Sendiri)</option>
+          </select>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>ALAMAT / NOMOR MEJA</label>
+          <textarea id="order-address" class="pixel-textarea" rows="2" placeholder="Masukkan alamat lengkap atau No. Meja kamu" required></textarea>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>METODE PEMBAYARAN</label>
+          <select id="order-payment" class="pixel-select">
+            <option value="QRIS (Semua E-Wallet / Bank)">QRIS Instan (GoPay, OVO, Dana, BCA, dll)</option>
+            <option value="Tunai / Bayar di Tempat (COD)">Tunai / Bayar di Tempat (COD)</option>
+            <option value="Transfer Bank Retro">Transfer Bank Mandiri/BCA</option>
+          </select>
+        </div>
+
+        <div class="cart-summary-box" style="margin-top: 15px;">
+          <div class="summary-row total-row">
+            <span>Total yang harus dibayar:</span>
+            <span id="checkout-total-val">Rp0</span>
+          </div>
+        </div>
+
+        <button type="submit" class="pixel-btn pixel-btn-green" style="width: 100%; padding: 14px;">
+          🖨️ BAYAR & CETAK STRUK SEKARANG
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 3: CETAK STRUK THERMAL (THERMAL RECEIPT)
+       ============================================================ -->
+  <div id="receipt-modal" class="modal-overlay hidden">
+    <div class="modal-container" style="background: transparent; border: none; box-shadow: none;">
+      <button class="modal-close-btn" onclick="closeReceiptModal()" style="top: -10px; right: 20px;">✕</button>
+
+      <!-- The Printed Receipt Wrapper -->
+      <div id="receipt-content-area">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+      <!-- Action buttons -->
+      <div class="receipt-actions">
+        <button class="pixel-btn pixel-btn-green" onclick="printReceipt()">
+          🖨️ CETAK STRUK (PRINT)
+        </button>
+        <button class="pixel-btn pixel-btn-cyan" onclick="sendReceiptWhatsApp()">
+          💬 KIRIM STRUK KE WHATSAPP
+        </button>
+        <button class="pixel-btn" onclick="downloadReceiptText()">
+          💾 SIMPAN STRUK (.TXT)
+        </button>
+        <button class="pixel-btn pixel-btn-red" onclick="closeReceiptModal()">
+          TUTUP
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 4: MINI-GAME CANVAS
+       ============================================================ -->
+  <div id="game-modal" class="modal-overlay hidden">
+    <div class="modal-container game-cabinet-frame">
+      <button class="modal-close-btn" onclick="closeMiniGame()">✕</button>
+      <h3 style="font-size: 13px; color: var(--pixel-gold); margin-bottom: 8px;">🎮 TANGKAP BIJI KOPI 8-BIT</h3>
+      <p style="font-size: 8px; color: #a595bc; margin-bottom: 12px;">Gunakan tombol panah [←] [→] atau A/D di keyboard!</p>
+
+      <div class="game-hud-bar">
+        <div>SCORE: <span id="game-score-display">0</span></div>
+        <div>TIME: <span id="game-time-display">25s</span></div>
+        <div>LIVES: <span id="game-lives-display">❤️❤️❤️</span></div>
+      </div>
+
+      <canvas id="game-canvas" width="320" height="260"></canvas>
+
+      <!-- Mobile Touch Controls -->
+      <div class="game-mobile-touch-ctrls">
+        <button id="game-btn-left" class="game-touch-btn">◀</button>
+        <button id="game-btn-right" class="game-touch-btn">▶</button>
+      </div>
+
+      <!-- Game Over Box Overlay -->
+      <div id="game-over-modal" class="hidden" style="margin-top: 15px; padding: 15px; background: #0c0617; border: 3px solid var(--pixel-gold);">
+        <h4 id="game-over-title" style="color: var(--pixel-green); font-size: 12px; margin-bottom: 8px;"></h4>
+        <p id="game-over-desc" style="font-size: 9px; color: #fff; margin-bottom: 12px;"></p>
+        <div id="game-voucher-box"></div>
+        <div style="margin-top: 14px; display: flex; gap: 8px; justify-content: center;">
+          <button class="pixel-btn" onclick="window.coffeeGame.start()">MAIN LAGI 🔄</button>
+          <button class="pixel-btn pixel-btn-red" onclick="closeMiniGame()">KELUAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 5: UBAH NAMA KASIR
+       ============================================================ -->
+  <div id="cashier-modal" class="modal-overlay hidden">
+    <div class="modal-container pixel-box-gold">
+      <button class="modal-close-btn" onclick="closeCashierModal()">✕</button>
+      <h3 class="modal-header-title">🧑‍🍳 UBAH NAMA KASIR</h3>
+      <form onsubmit="saveCashierName(event)">
+        <div class="pixel-form-group">
+          <label>NAMA KASIR / BARISTA BARU</label>
+          <input type="text" id="input-cashier-name" class="pixel-input" placeholder="Contoh: Barista Reza / Cyber Cashier" required>
+        </div>
+        <p style="font-size: 8px; color: #a595bc; margin-bottom: 15px; line-height: 1.6;">
+          Nama kasir ini akan tercetak langsung pada struk pembayaran pelanggan, tercatat di laporan, dan tersimpan otomatis di browser!
+        </p>
+        <button type="submit" class="pixel-btn pixel-btn-green" style="width: 100%; padding: 12px;">
+          💾 SIMPAN NAMA KASIR
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 6: TAMBAH MENU BARU
+       ============================================================ -->
+  <div id="add-menu-modal" class="modal-overlay hidden">
+    <div class="modal-container pixel-box-gold">
+      <button class="modal-close-btn" onclick="closeAddMenuModal()">✕</button>
+      <h3 class="modal-header-title">➕ TAMBAH MENU BARU</h3>
+      <form onsubmit="handleAddNewMenu(event)">
+        <div class="pixel-form-group">
+          <label>NAMA MENU KOPI / MAKANAN</label>
+          <input type="text" id="new-menu-name" class="pixel-input" placeholder="Contoh: Kopi Pandan 8-Bit" required>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>HARGA MENU (RP)</label>
+          <input type="number" id="new-menu-price" class="pixel-input" placeholder="Contoh: 20000" min="1000" step="500" required>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>KATEGORI</label>
+          <select id="new-menu-category" class="pixel-select">
+            <option value="coffee">KOPI RETRO (Coffee)</option>
+            <option value="non-coffee">NON-KOPI (Tea / Milk / Choco)</option>
+            <option value="snack">PIXEL SNACKS (Makanan Ringan)</option>
+          </select>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>IKON PIXEL</label>
+          <select id="new-menu-icon" class="pixel-select">
+            <option value="☕">☕ Cangkir Kopi Klasik</option>
+            <option value="⚡">⚡ Espresso Power Booster</option>
+            <option value="🧊">🧊 Cold Brew Dingin</option>
+            <option value="🎮">🎮 Retro Gaming Coffee</option>
+            <option value="🍵">🍵 Matcha Green Tea</option>
+            <option value="🧋">🧋 Boba Milk Tea</option>
+            <option value="🍫">🍫 Chocolate Bar</option>
+            <option value="🥤">🥤 Soda Glitch Pop</option>
+            <option value="🍩">🍩 Pixel Donut</option>
+            <option value="🍞">🍞 Roti Bakar Toast</option>
+            <option value="🥐">🥐 Croissant Pixel</option>
+            <option value="🍰">🍰 Cyber Cheese Cake</option>
+          </select>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>WARNA MINUMAN DI CANGKIR INTERAKTIF</label>
+          <input type="color" id="new-menu-color" class="pixel-input" value="#b27947" style="height: 42px; padding: 2px; cursor: pointer;">
+          <div class="color-presets-row">
+            <span class="color-preset-dot" style="background: #2b1408;" onclick="setNewMenuColor('#2b1408')" title="Espresso Hitam"></span>
+            <span class="color-preset-dot" style="background: #b27947;" onclick="setNewMenuColor('#b27947')" title="Kopi Susu Aren"></span>
+            <span class="color-preset-dot" style="background: #9c6d3f;" onclick="setNewMenuColor('#9c6d3f')" title="Cappuccino Latte"></span>
+            <span class="color-preset-dot" style="background: #588147;" onclick="setNewMenuColor('#588147')" title="Matcha Green"></span>
+            <span class="color-preset-dot" style="background: #422319;" onclick="setNewMenuColor('#422319')" title="Coklat Pekat"></span>
+            <span class="color-preset-dot" style="background: #d94b81;" onclick="setNewMenuColor('#d94b81')" title="Strawberry Pink"></span>
+            <span class="color-preset-dot" style="background: #00b4d8;" onclick="setNewMenuColor('#00b4d8')" title="Blue Lagoon"></span>
+          </div>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>DESKRIPSI MENU</label>
+          <textarea id="new-menu-desc" class="pixel-textarea" rows="2" placeholder="Jelaskan cita rasa menu kopi barumu..." required></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+          <div class="pixel-form-group">
+            <label>KAFEIN %</label>
+            <input type="number" id="new-menu-caffeine" class="pixel-input" value="70" min="0" max="100">
+          </div>
+          <div class="pixel-form-group">
+            <label>ENERGI %</label>
+            <input type="number" id="new-menu-energy" class="pixel-input" value="80" min="0" max="100">
+          </div>
+          <div class="pixel-form-group">
+            <label>MANIS %</label>
+            <input type="number" id="new-menu-sweetness" class="pixel-input" value="60" min="0" max="100">
+          </div>
+        </div>
+
+        <button type="submit" class="pixel-btn pixel-btn-green" style="width: 100%; padding: 14px; margin-top: 10px;">
+          ➕ TAMBAH KE BUKU MENU
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 7: UBAH HARGA / EDIT MENU
+       ============================================================ -->
+  <div id="edit-menu-modal" class="modal-overlay hidden">
+    <div class="modal-container pixel-box-gold">
+      <button class="modal-close-btn" onclick="closeEditMenuModal()">✕</button>
+      <h3 class="modal-header-title">✏️ UBAH HARGA / MENU</h3>
+      <form onsubmit="handleSaveEditedMenu(event)">
+        <input type="hidden" id="edit-menu-id">
+
+        <div class="pixel-form-group">
+          <label>NAMA MENU</label>
+          <input type="text" id="edit-menu-name" class="pixel-input" required>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>HARGA MENU BARU (RP)</label>
+          <input type="number" id="edit-menu-price" class="pixel-input" min="1000" step="500" required>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>DESKRIPSI MENU</label>
+          <textarea id="edit-menu-desc" class="pixel-textarea" rows="2" required></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+          <button type="submit" class="pixel-btn pixel-btn-green" style="flex: 1; padding: 12px;">
+            💾 SIMPAN HARGA
+          </button>
+          <button type="button" class="pixel-btn pixel-btn-red" onclick="handleDeleteMenuItem()" style="padding: 12px;">
+            🗑️ HAPUS
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 8: CUSTOM DISCOUNT (KASIR & PELANGGAN)
+       ============================================================ -->
+  <div id="custom-discount-modal" class="modal-overlay hidden">
+    <div class="modal-container pixel-box-gold">
+      <button class="modal-close-btn" onclick="closeCustomDiscountModal()">✕</button>
+      <h3 class="modal-header-title">🎟️ ATUR DISKON MANUAL</h3>
+      <form onsubmit="handleApplyManualDiscount(event)">
+        <div class="pixel-form-group">
+          <label>TIPE DISKON</label>
+          <select id="manual-discount-type" class="pixel-select" onchange="updateManualDiscountPlaceholder()">
+            <option value="percent">Persentase (%)</option>
+            <option value="nominal">Nominal Rupiah (Rp)</option>
+          </select>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>NILAI DISKON</label>
+          <input type="number" id="manual-discount-value" class="pixel-input" placeholder="Contoh: 15 (untuk 15%)" min="1" required>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>KETERANGAN / ALASAN DISKON</label>
+          <input type="text" id="manual-discount-label" class="pixel-input" placeholder="Contoh: Diskon Member / Teman Barista" required>
+        </div>
+
+        <button type="submit" class="pixel-btn pixel-btn-green" style="width: 100%; padding: 12px; margin-top: 10px;">
+          PASANG DISKON KE TRANSAKSI
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 9: DAFTAR KUPON PROMO AKTIF (SIAP PAKAI)
+       ============================================================ -->
+  <div id="promo-list-modal" class="modal-overlay hidden">
+    <div class="modal-container pixel-box-gold">
+      <button class="modal-close-btn" onclick="closePromoListModal()">✕</button>
+      <h3 class="modal-header-title">🎟️ DAFTAR KUPON PROMO AKTIF</h3>
+      
+      <div style="display: flex; gap: 8px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap;">
+        <button class="pixel-btn pixel-btn-green" style="padding: 8px 12px; font-size: 8px;" onclick="openCreateCouponModal()">
+          ➕ BUAT KUPON KUSTOM BARU
+        </button>
+        <button class="pixel-btn pixel-btn-red" style="padding: 8px 12px; font-size: 8px;" onclick="resetCustomCoupons()">
+          🔄 RESET KUPON
+        </button>
+      </div>
+
+      <p style="font-size: 8px; color: var(--pixel-cyan); text-align: center; margin-bottom: 12px;">
+        Klik tombol [PASANG] pada kupon untuk langsung memotong harga pesananmu!
+      </p>
+
+      <div id="promo-list-container" style="display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto;">
+        <!-- Rendered dynamically by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 10: BUAT KUPON KUSTOM BARU (CUSTOM COUPON)
+       ============================================================ -->
+  <div id="create-custom-coupon-modal" class="modal-overlay hidden">
+    <div class="modal-container pixel-box-gold">
+      <button class="modal-close-btn" onclick="closeCreateCouponModal()">✕</button>
+      <h3 class="modal-header-title">🎟️ BUAT KUPON KUSTOM BARU</h3>
+      <form onsubmit="handleCreateCustomCoupon(event)">
+        <div class="pixel-form-group">
+          <label>KODE KUPON (OTOMATIS HURUF BESAR)</label>
+          <input type="text" id="new-coupon-code" class="pixel-input" placeholder="Contoh: KOPISANTUY / HEMAT25" style="text-transform: uppercase;" required>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>TIPE DISKON</label>
+          <select id="new-coupon-type" class="pixel-select" onchange="updateNewCouponPlaceholder()">
+            <option value="percent">Persentase (%)</option>
+            <option value="nominal">Nominal Rupiah (Rp)</option>
+          </select>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>NILAI DISKON</label>
+          <input type="number" id="new-coupon-value" class="pixel-input" placeholder="Contoh: 25 (untuk 25%)" min="1" required>
+        </div>
+
+        <div class="pixel-form-group">
+          <label>KETERANGAN / DESKRIPSI KUPON</label>
+          <input type="text" id="new-coupon-label" class="pixel-input" placeholder="Contoh: Diskon Pelanggan Setia / Spesial Mahasiswa" required>
+        </div>
+
+        <button type="submit" class="pixel-btn pixel-btn-green" style="width: 100%; padding: 12px; margin-top: 10px;">
+          💾 SIMPAN & AKTIFKAN KUPON KUSTOM
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="retro-footer">
+    <div class="footer-content">
+      <h4 class="footer-title">KOPI 8-BIT</h4>
+      <p class="footer-info">
+        Buka setiap hari, 08.00 - 22.00<br>
+        Cyber Coffee Lab, BitCity Arcade District<br>
+        Instagram: @kopi8bit.official • WhatsApp: 0812-8BIT-COFFEE
+      </p>
+      <div class="footer-credits">
+        © 2026 KOPI 8-BIT. ALL RIGHTS RESERVED. POWERED BY GOOGLE ANTIGRAVITY.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
